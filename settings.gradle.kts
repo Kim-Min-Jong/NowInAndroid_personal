@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// Gradle 설정에서 플러그인 버전과 관련된 설정을 중앙 관리할 수 있도록 도와주는 메소드
 pluginManagement {
-    //
+    // 여러 gradle를 묶어 빌드를 통합할 수 있게 해주는 메소드
     includeBuild("build-logic")
     repositories {
         google()
@@ -34,6 +35,7 @@ dependencyResolutionManagement {
 rootProject.name = "nowinandroid"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+// 멀티 모듈로 만들어 이 곳에서 통합하여 사용
 include(":app")
 include(":app-nia-catalog")
 include(":benchmarks")
