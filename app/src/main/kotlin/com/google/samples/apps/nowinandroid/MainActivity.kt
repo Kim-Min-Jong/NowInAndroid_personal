@@ -178,7 +178,7 @@ class MainActivity : ComponentActivity() {
         lazyStats.get().isTrackingEnabled = false
     }
 }
-
+//
 /**
  * Returns `true` if the Android theme should be used, as a function of the [uiState].
  */
