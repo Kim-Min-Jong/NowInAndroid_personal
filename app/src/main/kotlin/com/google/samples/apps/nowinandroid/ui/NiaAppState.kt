@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.TimeZone
 
+// 앱의 상태를 기억하기 위해 만든 커스텀 상태 컴포저블
 @Composable
 fun rememberNiaAppState(
     networkMonitor: NetworkMonitor,
@@ -75,6 +76,8 @@ fun rememberNiaAppState(
     }
 }
 
+// 앱의 각종 상태를 관리하는 클래스
+// 네비게이션 도착지, 네트워크 상태, 시간 모니터,
 @Stable
 class NiaAppState(
     val navController: NavHostController,

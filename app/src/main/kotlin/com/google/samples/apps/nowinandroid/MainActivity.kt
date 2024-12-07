@@ -54,9 +54,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// hilt 진입점 중 하나 (액티비티)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    // hilt를 통한 객체 주입
     /**
      * Lazily inject [JankStats], which is used to track jank throughout the app.
      */
@@ -75,12 +77,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
+    // 뷰모델 초기화
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // SplashScreen API 을 통한 스플래시 화면
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        // 메인 액티비티의 UI 상태 (로딩, 성공 상태 구분을 통해 UI 업데이트)
         var uiState: MainActivityUiState by mutableStateOf(Loading)
 
         // Update the uiState
@@ -95,9 +100,13 @@ class MainActivity : ComponentActivity() {
         // Keep the splash screen on-screen until the UI state is loaded. This condition is
         // evaluated each time the app needs to be redrawn so it should be fast to avoid blocking
         // the UI.
+
+        // setKeepOnScreenCondition(Boolean)
+        // true -> 스플래시 화면 유지
+        // false -> 스플래시 화면 끝
         splashScreen.setKeepOnScreenCondition {
             when (uiState) {
-                Loading -> true
+                is Loading -> true
                 is Success -> false
             }
         }
@@ -108,12 +117,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
+            // 다크 모드
             val darkTheme = shouldUseDarkTheme(uiState)
 
             // Update the edge to edge configuration to match the theme
             // This is the same parameters as the default enableEdgeToEdge call, but we manually
             // resolve whether or not to show dark theme using uiState, since it can be different
             // than the configuration's dark theme value based on the user preference.
+
+            // 엣지 투 엣지(Edge-to-Edge) 구성을 테마에 맞게 업데이트
+            // 이는 기본적인 enableEdgeToEdge 호출과 동일한 파라미터이지만, uiState를 사용하여 다크 테마를 표시할지 여부를 수동으로 해결
+            // 이는 사용자 선호에 따라 구성의 다크 테마 값과 다를 수 있음
             DisposableEffect(darkTheme) {
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.auto(
@@ -128,6 +142,7 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
 
+            // 앱의 상태(네트워크, 데이터 레이어, 시간대)를 기억하는 컴포저블
             val appState = rememberNiaAppState(
                 networkMonitor = networkMonitor,
                 userNewsResourceRepository = userNewsResourceRepository,
@@ -136,6 +151,7 @@ class MainActivity : ComponentActivity() {
 
             val currentTimeZone by appState.currentTimeZone.collectAsStateWithLifecycle()
 
+            // 컴포저블 상위 트리에서 선언된 상태를 하위에 접근할 수 있는 방법을 제공
             CompositionLocalProvider(
                 LocalAnalyticsHelper provides analyticsHelper,
                 LocalTimeZone provides currentTimeZone,
@@ -151,6 +167,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // onResume, Pause 마다 상태추적을 진행, 정지
     override fun onResume() {
         super.onResume()
         lazyStats.get().isTrackingEnabled = true
@@ -191,6 +208,7 @@ private fun shouldDisableDynamicTheming(
  * Returns `true` if dark theme should be used, as a function of the [uiState] and the
  * current system context.
  */
+// 다크 모드 분기점
 @Composable
 private fun shouldUseDarkTheme(
     uiState: MainActivityUiState,
