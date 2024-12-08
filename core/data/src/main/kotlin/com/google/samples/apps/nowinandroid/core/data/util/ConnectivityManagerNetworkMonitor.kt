@@ -37,13 +37,17 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
-
+// NetworkMonitor를 상속받아 구체화
 internal class ConnectivityManagerNetworkMonitor @Inject constructor(
     @ApplicationContext private val context: Context,
+    // hilt를 통해 생성한 IO Dispatcher
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : NetworkMonitor {
+    // callback 기반 api를 flow로 변환하는 빌더
     override val isOnline: Flow<Boolean> = callbackFlow {
+        // 클래스 및 메소드 등의 사용 기록을 추적하기 위한 trace 메소드
         trace("NetworkMonitor.callbackFlow") {
+            // 연결 상태를 확인하는 객체 (android context 필요)
             val connectivityManager = context.getSystemService<ConnectivityManager>()
             if (connectivityManager == null) {
                 channel.trySend(false)
@@ -55,6 +59,7 @@ internal class ConnectivityManagerNetworkMonitor @Inject constructor(
              * The callback's methods are invoked on changes to *any* network matching the [NetworkRequest],
              * not just the active network. So we can simply track the presence (or absence) of such [Network].
              */
+            // 네트워크 추적 콜백 생성
             val callback = object : NetworkCallback() {
 
                 private val networks = mutableSetOf<Network>()
@@ -88,6 +93,7 @@ internal class ConnectivityManagerNetworkMonitor @Inject constructor(
         }
     }
         .flowOn(ioDispatcher)
+        // 한 번 시작 된 데이터는 소비가 끝날때 까지 사용학 소비가 다음 소비는 끝난 시점에서의 가장 최신 데이터를 소비
         .conflate()
 
     @Suppress("DEPRECATION")

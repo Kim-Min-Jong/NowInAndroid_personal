@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Utility for reporting app connectivity status
  */
+// 인터페이스를 통한 추상화
 interface NetworkMonitor {
     val isOnline: Flow<Boolean>
 }

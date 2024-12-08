@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
     lateinit var lazyStats: dagger.Lazy<JankStats>
 
     @Inject
-    lateinit var networkMonitor: NetworkMonitor
+    lateinit var networkMonitor: NetworkMonitor //
 
     @Inject
     lateinit var timeZoneMonitor: TimeZoneMonitor
