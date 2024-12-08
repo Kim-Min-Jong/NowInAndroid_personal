@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
     lateinit var networkMonitor: NetworkMonitor //
 
     @Inject
-    lateinit var timeZoneMonitor: TimeZoneMonitor
+    lateinit var timeZoneMonitor: TimeZoneMonitor //
 
     @Inject
     lateinit var analyticsHelper: AnalyticsHelper
