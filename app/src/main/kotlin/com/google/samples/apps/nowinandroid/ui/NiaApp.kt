@@ -89,22 +89,29 @@ fun NiaApp(
     // 다이얼로그 시각화 유무
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
 
+    // 기본 배경
     NiaBackground(modifier = modifier) {
+        // 하위에 gradient 배경
         NiaGradientBackground(
+            // 단 gradient 조건이 충족 되었을 떄만 그림
             gradientColors = if (shouldShowGradientBackground) {
                 LocalGradientColors.current
             } else {
                 GradientColors()
             },
         ) {
+            // 스낵바를 띄우기 위한 상태 설정
             val snackbarHostState = remember { SnackbarHostState() }
 
+            // 네트워크 확인 상태를 가진 flow
             val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
             // If user is not connected to the internet show a snack bar to inform them.
             val notConnectedMessage = stringResource(R.string.not_connected)
+            // side effect를 통해 coroutine을 실행
             LaunchedEffect(isOffline) {
                 if (isOffline) {
+                    // snackbar는 suspend fun으로 구성되어 있어 코루틴 스코프가 필요
                     snackbarHostState.showSnackbar(
                         message = notConnectedMessage,
                         duration = Indefinite,
@@ -112,6 +119,7 @@ fun NiaApp(
                 }
             }
 
+            // 컨텐츠 요소
             NiaApp(
                 appState = appState,
                 snackbarHostState = snackbarHostState,
@@ -124,12 +132,14 @@ fun NiaApp(
     }
 }
 
+
 @Composable
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
 )
+// 해당 모듈에서만 접근 가능 -> 외부 접근 방지 -> 실제 로직 코드
 internal fun NiaApp(
     appState: NiaAppState,
     snackbarHostState: SnackbarHostState,
