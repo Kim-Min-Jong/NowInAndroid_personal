@@ -37,4 +37,7 @@ data class GradientColors(
 /**
  * A composition local for [GradientColors].
  */
+// composition local -> 많은 컴포저블을 사용하다보면 상태도 그만큼 많아지는데 모든 컴포저블마다
+// 상태를 적용하는건 비용이 큰 행위이다.
+// CompositionLocal을 사용하면 하위 컴포저블에 동일한 상태를 전달할 수 있게 된다
 val LocalGradientColors = staticCompositionLocalOf { GradientColors() }

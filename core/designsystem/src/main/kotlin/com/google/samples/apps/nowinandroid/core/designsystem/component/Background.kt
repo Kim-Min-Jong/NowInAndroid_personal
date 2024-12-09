@@ -52,13 +52,17 @@ fun NiaBackground(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
+    // 기본 테마 배경색
     val color = LocalBackgroundTheme.current.color
+    // 기본 그림자
     val tonalElevation = LocalBackgroundTheme.current.tonalElevation
+    // compose 기본 화면 구성 단위 중 하나
     Surface(
         color = if (color == Color.Unspecified) Color.Transparent else color,
         tonalElevation = if (tonalElevation == Dp.Unspecified) 0.dp else tonalElevation,
         modifier = modifier.fillMaxSize(),
     ) {
+        // 하위 컴포저블에도 elevation을 기본 0dp로 전달
         CompositionLocalProvider(LocalAbsoluteTonalElevation provides 0.dp) {
             content()
         }
@@ -73,12 +77,14 @@ fun NiaBackground(
  * @param gradientColors The gradient colors to be rendered.
  * @param content The background content.
  */
+// gradient한  뒷 배경이
 @Composable
 fun NiaGradientBackground(
     modifier: Modifier = Modifier,
     gradientColors: GradientColors = LocalGradientColors.current,
     content: @Composable () -> Unit,
 ) {
+    // gradient를 나타내기 위한 위 아래 색 지정
     val currentTopColor by rememberUpdatedState(gradientColors.top)
     val currentBottomColor by rememberUpdatedState(gradientColors.bottom)
     Surface(
@@ -92,7 +98,9 @@ fun NiaGradientBackground(
         Box(
             Modifier
                 .fillMaxSize()
+                // DrawScope를 사용해서 커스텀 캔버스로 그리기
                 .drawWithCache {
+                    // gradient를 그리기 위한 좌표? 수치? 계산
                     // Compute the start and end coordinates such that the gradients are angled 11.06
                     // degrees off the vertical axis
                     val offset = size.height * tan(
@@ -127,6 +135,7 @@ fun NiaGradientBackground(
                         end = end,
                     )
 
+                    // 컨텐츠 앞이 아닌 뒤에 그려 배경을 설정
                     onDrawBehind {
                         // There is overlap here, so order is important
                         drawRect(topGradient)
