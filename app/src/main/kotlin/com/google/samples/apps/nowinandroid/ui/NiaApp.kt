@@ -159,12 +159,16 @@ internal fun NiaApp(
         )
     }
 
+    // 내비게이션
     NiaNavigationSuiteScaffold(
+        // 내비게이션 아이템 목록을 주입
         navigationSuiteItems = {
             appState.topLevelDestinations.forEach { destination ->
+                // 선택, 안읽은 탭 분리
                 val hasUnread = unreadDestinations.contains(destination)
                 val selected = currentDestination
                     .isRouteInHierarchy(destination.baseRoute)
+                // 탭 요소에 각종 속성을 주입
                 item(
                     selected = selected,
                     onClick = { appState.navigateToTopLevelDestination(destination) },
@@ -190,6 +194,7 @@ internal fun NiaApp(
         },
         windowAdaptiveInfo = windowAdaptiveInfo,
     ) {
+        // 내비게이션 마다 보여줄 화면
         Scaffold(
             modifier = modifier.semantics {
                 testTagsAsResourceId = true
@@ -211,12 +216,17 @@ internal fun NiaApp(
                     ),
             ) {
                 // Show the top app bar on top level destinations.
+                // 상단에 앱바 나타내기
                 val destination = appState.currentTopLevelDestination
                 var shouldShowTopAppBar = false
 
+                // 띄워야 할 화면이 있다면 (내비게이션 선택됨)
                 if (destination != null) {
+                    // 앱바 나타내기
                     shouldShowTopAppBar = true
+                    // 앱바 레이아웃
                     NiaTopAppBar(
+                        // 앱 바 내 요소에 UI 바인딩
                         titleRes = destination.titleTextId,
                         navigationIcon = NiaIcons.Search,
                         navigationIconContentDescription = stringResource(

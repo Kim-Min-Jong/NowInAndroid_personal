@@ -49,8 +49,10 @@ fun NiaTopAppBar(
     onNavigationClick: () -> Unit = {},
     onActionClick: () -> Unit = {},
 ) {
+    // 가운데로 정렬된 삳단 앱바
     CenterAlignedTopAppBar(
         title = { Text(text = stringResource(id = titleRes)) },
+        // 중앙 기준 왼쪽 요소
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
                 Icon(
@@ -60,6 +62,7 @@ fun NiaTopAppBar(
                 )
             }
         },
+        // 중앙 기준 오른쪽 요소
         actions = {
             IconButton(onClick = onActionClick) {
                 Icon(
