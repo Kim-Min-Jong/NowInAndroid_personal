@@ -47,7 +47,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- 웹뷰 브라우저를 가져올수도있음 -->
+            <!-- 웹뷰 브라우저를 가져올수도있음 --> <!-- 딥링크 -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

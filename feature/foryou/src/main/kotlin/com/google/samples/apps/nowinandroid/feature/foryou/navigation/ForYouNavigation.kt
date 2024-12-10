@@ -39,12 +39,14 @@ fun NavController.navigateToForYou(navOptions: NavOptions) = navigate(route = Fo
  *  @param onTopicClick - Called when a topic is clicked, contains the ID of the topic
  *  @param topicDestination - Destination for topic content
  */
+// 확장함수로 보여줄 섹션을 정의
 fun NavGraphBuilder.forYouSection(
     onTopicClick: (String) -> Unit,
     topicDestination: NavGraphBuilder.() -> Unit,
 ) {
     navigation<ForYouBaseRoute>(startDestination = ForYouRoute) {
         composable<ForYouRoute>(
+            // 딥링크를 통해 목적지를 다른 앱에 노출 - 앱 -> 브라우저
             deepLinks = listOf(
                 navDeepLink {
                     /**
