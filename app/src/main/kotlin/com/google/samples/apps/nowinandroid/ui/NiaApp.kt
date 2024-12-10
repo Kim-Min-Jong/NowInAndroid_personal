@@ -244,18 +244,24 @@ internal fun NiaApp(
                     )
                 }
 
+                // 엡바 밑의 UI 컨텐츠 요소
                 Box(
                     // Workaround for https://issuetracker.google.com/338478720
+                    // 시스템 UI와 컨텐츠간의 간격을 세밀하게 조정
                     modifier = Modifier.consumeWindowInsets(
+                        // 상단바가 있으면 상단에만 간격을 줌
                         if (shouldShowTopAppBar) {
                             WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
                         } else {
+                            // 없으면 간격 없앰 전체화면
                             WindowInsets(0, 0, 0, 0)
                         },
                     ),
                 ) {
+                    // 시작 화면에 NavHost를 등록하여 내비게이션 내부 컨텐츠 UI 등록
                     NiaNavHost(
                         appState = appState,
+                        // showSnackbar 했을 떄 동작하는 지 확인?
                         onShowSnackbar = { message, action ->
                             snackbarHostState.showSnackbar(
                                 message = message,

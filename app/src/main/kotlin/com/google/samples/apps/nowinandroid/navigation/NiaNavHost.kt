@@ -37,6 +37,7 @@ import com.google.samples.apps.nowinandroid.ui.interests2pane.interestsListDetai
  * The navigation graph defined in this file defines the different top level routes. Navigation
  * within each route is handled using state and Back Handlers.
  */
+// appState에 따라 어떤 경로의 화면을 보여줄지 정하는 navigation destination을 포함한 요소
 @Composable
 fun NiaNavHost(
     appState: NiaAppState,
@@ -49,6 +50,8 @@ fun NiaNavHost(
         startDestination = ForYouBaseRoute,
         modifier = modifier,
     ) {
+        // 4가지의 화면으로 구성되어 있음
+        // -----------
         forYouSection(
             onTopicClick = navController::navigateToTopic,
         ) {
@@ -58,15 +61,18 @@ fun NiaNavHost(
                 onTopicClick = navController::navigateToTopic,
             )
         }
+        // -----------
         bookmarksScreen(
             onTopicClick = navController::navigateToInterests,
             onShowSnackbar = onShowSnackbar,
         )
+        // -----------
         searchScreen(
             onBackClick = navController::popBackStack,
             onInterestsClick = { appState.navigateToTopLevelDestination(INTERESTS) },
             onTopicClick = navController::navigateToInterests,
         )
+        // -----------
         interestsListDetailScreen()
     }
 }
