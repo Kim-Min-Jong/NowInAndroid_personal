@@ -104,17 +104,21 @@ import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParam
 import com.google.samples.apps.nowinandroid.core.ui.launchCustomChromeTab
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 
+// 같은 이름 컴포저블 분리? -> 왜?
 @Composable
 internal fun ForYouScreen(
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ForYouViewModel = hiltViewModel(),
 ) {
+    // For You 탭 메인 화면의 3가지 온보딩 컨텐츠의 상태
     val onboardingUiState by viewModel.onboardingUiState.collectAsStateWithLifecycle()
+    // 각 온보딩 토픽의 피드의 상태
     val feedState by viewModel.feedState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
     val deepLinkedUserNewsResource by viewModel.deepLinkedNewsResource.collectAsStateWithLifecycle()
 
+    // :: 함수 참조 연산자를 통해 람다식 실행
     ForYouScreen(
         isSyncing = isSyncing,
         onboardingUiState = onboardingUiState,
@@ -130,6 +134,7 @@ internal fun ForYouScreen(
     )
 }
 
+// 같은 이름 컴포저블 분리? -> 왜?
 @Composable
 internal fun ForYouScreen(
     isSyncing: Boolean,
@@ -144,6 +149,7 @@ internal fun ForYouScreen(
     onNewsResourceViewed: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // 화면에 필요한 상태 정의 (초기화)
     val isOnboardingLoading = onboardingUiState is OnboardingUiState.Loading
     val isFeedLoading = feedState is NewsFeedUiState.Loading
 
@@ -152,16 +158,21 @@ internal fun ForYouScreen(
 
     val itemsAvailable = feedItemsSize(feedState, onboardingUiState)
 
+    // StaggerdGrid 레이아웃의 상태 (격자구조) like recyclerView - StaggeredGridManager
     val state = rememberLazyStaggeredGridState()
+
+    // 레이아웃의 스크롤 상태
     val scrollbarState = state.scrollbarState(
         itemsAvailable = itemsAvailable,
     )
+
     TrackScrollJank(scrollableState = state, stateName = "forYou:feed")
 
     Box(
         modifier = modifier
             .fillMaxSize(),
     ) {
+        // 수직 격자 구조 스크롤 레이아웃 (리사이클러뷰 라이크)
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(300.dp),
             contentPadding = PaddingValues(16.dp),
@@ -171,6 +182,7 @@ internal fun ForYouScreen(
                 .testTag("forYou:feed"),
             state = state,
         ) {
+            // 여러가지 토픽 보여주기
             onboarding(
                 onboardingUiState = onboardingUiState,
                 onTopicCheckedChanged = onTopicCheckedChanged,
@@ -189,6 +201,7 @@ internal fun ForYouScreen(
                 },
             )
 
+            // 토픽에 대한 기사
             newsFeed(
                 feedState = feedState,
                 onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
@@ -260,6 +273,7 @@ private fun LazyStaggeredGridScope.onboarding(
     saveFollowedTopics: () -> Unit,
     interestsItemModifier: Modifier = Modifier,
 ) {
+    // when 절을 통해 OnboardingUI 가 Shown (보여짐) 일 때만 UI를 노출
     when (onboardingUiState) {
         OnboardingUiState.Loading,
         OnboardingUiState.LoadFailed,
@@ -267,8 +281,10 @@ private fun LazyStaggeredGridScope.onboarding(
         -> Unit
 
         is OnboardingUiState.Shown -> {
+            // StaggerdGrid - FullLine 카드 전체 영역
             item(span = StaggeredGridItemSpan.FullLine, contentType = "onboarding") {
                 Column(modifier = interestsItemModifier) {
+                    // 설명 텍스트
                     Text(
                         text = stringResource(R.string.feature_foryou_onboarding_guidance_title),
                         textAlign = TextAlign.Center,
@@ -277,6 +293,7 @@ private fun LazyStaggeredGridScope.onboarding(
                             .padding(top = 24.dp),
                         style = MaterialTheme.typography.titleMedium,
                     )
+                    // 설명 텍스트
                     Text(
                         text = stringResource(R.string.feature_foryou_onboarding_guidance_subtitle),
                         modifier = Modifier
@@ -285,12 +302,13 @@ private fun LazyStaggeredGridScope.onboarding(
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyMedium,
                     )
+                    // 여러가지 토픽을 나타내는 컴포저블
                     TopicSelection(
                         onboardingUiState,
                         onTopicCheckedChanged,
                         Modifier.padding(bottom = 8.dp),
                     )
-                    // Done button
+                    // Done button 선택 버튼
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth(),
@@ -329,8 +347,10 @@ private fun TopicSelection(
         modifier = modifier
             .fillMaxWidth(),
     ) {
+        // 수평 격자 구조 컴포저블
         LazyHorizontalGrid(
             state = lazyGridState,
+            // 3개 행 고정
             rows = GridCells.Fixed(3),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -353,21 +373,25 @@ private fun TopicSelection(
                 items = onboardingUiState.topics,
                 key = { it.topic.id },
             ) {
+                // 내부 상세 버튼 컴포저블
                 SingleTopicButton(
                     name = it.topic.name,
                     topicId = it.topic.id,
                     imageUrl = it.topic.imageUrl,
                     isSelected = it.isFollowed,
+                    // 클릭시 하단부에 뉴스 띄우는 로직
                     onClick = onTopicCheckedChanged,
                 )
             }
         }
+        // 수평 격자 컴포저블의 스크롤바 상태 및 스타일 정의
         lazyGridState.DecorativeScrollbar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
                 .align(Alignment.BottomStart),
             state = lazyGridState.scrollbarState(itemsAvailable = onboardingUiState.topics.size),
+            // 수평 격자 구조를 사용하므로 Horizontal로
             orientation = Orientation.Horizontal,
         )
     }

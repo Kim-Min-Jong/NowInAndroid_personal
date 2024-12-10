@@ -37,8 +37,11 @@ internal class WorkManagerSyncManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : SyncManager {
     override val isSyncing: Flow<Boolean> =
+        // flow를 통해 워크 매니저를 관찰
         WorkManager.getInstance(context).getWorkInfosForUniqueWorkFlow(SYNC_WORK_NAME)
+            // 작업 상태가 Running 상태 하나라도 있으면 True
             .map(List<WorkInfo>::anyRunning)
+            // 최신 데이터 수집
             .conflate()
 
     override fun requestSync() {
@@ -52,4 +55,5 @@ internal class WorkManagerSyncManager @Inject constructor(
     }
 }
 
+//
 private fun List<WorkInfo>.anyRunning() = any { it.state == State.RUNNING }

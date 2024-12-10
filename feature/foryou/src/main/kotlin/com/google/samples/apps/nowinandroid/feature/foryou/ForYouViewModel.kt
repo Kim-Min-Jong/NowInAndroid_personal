@@ -76,6 +76,7 @@ class ForYouViewModel @Inject constructor(
             initialValue = null,
         )
 
+    // flow 수집이 잘 이루어지고 있는지?
     val isSyncing = syncManager.isSyncing
         .stateIn(
             scope = viewModelScope,
@@ -83,6 +84,7 @@ class ForYouViewModel @Inject constructor(
             initialValue = false,
         )
 
+    // 보여줄 데이터 유지를 위해 flow -> stateFlow로 변환
     val feedState: StateFlow<NewsFeedUiState> =
         userNewsResourceRepository.observeAllForFollowedTopics()
             .map(NewsFeedUiState::Success)
@@ -92,7 +94,9 @@ class ForYouViewModel @Inject constructor(
                 initialValue = NewsFeedUiState.Loading,
             )
 
+    // 보여줄 데이터 유지를 위해 flow -> stateFlow로 변환
     val onboardingUiState: StateFlow<OnboardingUiState> =
+        // combine 메소드를 통해 2개의 flow를 결합, 조작해서 사용 가능
         combine(
             shouldShowOnboarding,
             getFollowableTopics(),
@@ -109,18 +113,21 @@ class ForYouViewModel @Inject constructor(
                 initialValue = OnboardingUiState.Loading,
             )
 
+    // 체크한 토픽을 나타내기
     fun updateTopicSelection(topicId: String, isChecked: Boolean) {
         viewModelScope.launch {
             userDataRepository.setTopicIdFollowed(topicId, isChecked)
         }
     }
 
+    // 피드 북마크 저장
     fun updateNewsResourceSaved(newsResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
             userDataRepository.setNewsResourceBookmarked(newsResourceId, isChecked)
         }
     }
 
+    // 봤던 피드 설정
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
             userDataRepository.setNewsResourceViewed(newsResourceId, viewed)
@@ -140,6 +147,7 @@ class ForYouViewModel @Inject constructor(
         }
     }
 
+    // 3가지 온보딩 탭 숨기기
     fun dismissOnboarding() {
         viewModelScope.launch {
             userDataRepository.setShouldHideOnboarding(true)

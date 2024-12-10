@@ -50,6 +50,7 @@ fun NiaIconToggleButton(
 ) {
     // TODO: File bug
     // Can't use regular IconToggleButton as it doesn't include a shape (appears square)
+    // 버튼 상세 정의
     FilledIconToggleButton(
         checked = checked,
         onCheckedChange = onCheckedChange,
