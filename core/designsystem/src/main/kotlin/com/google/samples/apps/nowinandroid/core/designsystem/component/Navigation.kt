@@ -188,6 +188,8 @@ fun NiaNavigationRail(
     ExperimentalMaterial3AdaptiveNavigationSuiteApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
 )
+// 이 앱의 내비게이션 기본 레이아웃
+// NavigationSuite -> 반응형 네비게이션으로 레이아웃 크기에 따라 네비게이션 형태가 바뀜
 @Composable
 fun NiaNavigationSuiteScaffold(
     navigationSuiteItems: NiaNavigationSuiteScope.() -> Unit,
@@ -195,9 +197,12 @@ fun NiaNavigationSuiteScaffold(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
     content: @Composable () -> Unit,
 ) {
+    // 레이아웃의 형태가 어떤 형태인지
     val layoutType = NavigationSuiteScaffoldDefaults
         .calculateFromAdaptiveInfo(windowAdaptiveInfo)
+    // 네비게이션 컴포넌트 색상 정의
     val navigationSuiteItemColors = NavigationSuiteItemColors(
+        // 작은 디바이스
         navigationBarItemColors = NavigationBarItemDefaults.colors(
             selectedIconColor = NiaNavigationDefaults.navigationSelectedItemColor(),
             unselectedIconColor = NiaNavigationDefaults.navigationContentColor(),
@@ -205,6 +210,7 @@ fun NiaNavigationSuiteScaffold(
             unselectedTextColor = NiaNavigationDefaults.navigationContentColor(),
             indicatorColor = NiaNavigationDefaults.navigationIndicatorColor(),
         ),
+        // 중간 사이즈 디바이스
         navigationRailItemColors = NavigationRailItemDefaults.colors(
             selectedIconColor = NiaNavigationDefaults.navigationSelectedItemColor(),
             unselectedIconColor = NiaNavigationDefaults.navigationContentColor(),
@@ -212,6 +218,7 @@ fun NiaNavigationSuiteScaffold(
             unselectedTextColor = NiaNavigationDefaults.navigationContentColor(),
             indicatorColor = NiaNavigationDefaults.navigationIndicatorColor(),
         ),
+        // 대형 디바이스
         navigationDrawerItemColors = NavigationDrawerItemDefaults.colors(
             selectedIconColor = NiaNavigationDefaults.navigationSelectedItemColor(),
             unselectedIconColor = NiaNavigationDefaults.navigationContentColor(),
@@ -220,15 +227,19 @@ fun NiaNavigationSuiteScaffold(
         ),
     )
 
+    // 적응형 네비게이션 기본 컴포넌트
     NavigationSuiteScaffold(
+        // 보여질 내비게이션 요소들 (탭 요소)
         navigationSuiteItems = {
             NiaNavigationSuiteScope(
                 navigationSuiteScope = this,
                 navigationSuiteItemColors = navigationSuiteItemColors,
             ).run(navigationSuiteItems)
         },
+        // UI type (넓은 화면.. 작은화면..)
         layoutType = layoutType,
         containerColor = Color.Transparent,
+        // 내비게이션 배경 색 등 색상 설정
         navigationSuiteColors = NavigationSuiteDefaults.colors(
             navigationBarContentColor = NiaNavigationDefaults.navigationContentColor(),
             navigationRailContainerColor = Color.Transparent,
@@ -243,6 +254,7 @@ fun NiaNavigationSuiteScaffold(
  * A wrapper around [NavigationSuiteScope] to declare navigation items.
  */
 @OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
+// NavigationSuiteScope를 이 앱의 용도 맞게 wrapping한 class
 class NiaNavigationSuiteScope internal constructor(
     private val navigationSuiteScope: NavigationSuiteScope,
     private val navigationSuiteItemColors: NavigationSuiteItemColors,
