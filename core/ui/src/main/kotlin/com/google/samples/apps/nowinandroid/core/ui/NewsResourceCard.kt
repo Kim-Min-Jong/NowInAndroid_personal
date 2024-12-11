@@ -125,7 +125,9 @@ fun NewsResourceCardExpanded(
             }
             .testTag("newsResourceCard:${userNewsResource.id}"),
     ) {
+        // 내부 상세 UI
         Column {
+            // 가져온 데이터에서 이미지 URL이 존재하면 보여줌
             if (!userNewsResource.headerImageUrl.isNullOrEmpty()) {
                 Row {
                     NewsResourceHeaderImage(userNewsResource.headerImageUrl)
@@ -184,15 +186,21 @@ fun NewsResourceCardExpanded(
     }
 }
 
+// 뉴스 피드 이미지 컴포저블
 @Composable
 fun NewsResourceHeaderImage(
     headerImageUrl: String?,
 ) {
+    // 이미지 로딩 중 상태 확인
     var isLoading by remember { mutableStateOf(true) }
+    // 이미지 가져오는 중 문제가 있는 지 상태 확인
     var isError by remember { mutableStateOf(false) }
+    // 이미지를 가져오는 이미지 로더
+    // Async? -> 내부에서 코루틴 활용하여 가져오는 듯
     val imageLoader = rememberAsyncImagePainter(
         model = headerImageUrl,
         onState = { state ->
+            // 이미지 가져올 떄, 어떤 상태인지 계속 업데이트
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
         },
@@ -204,6 +212,7 @@ fun NewsResourceHeaderImage(
             .height(180.dp),
         contentAlignment = Alignment.Center,
     ) {
+        // 로딩 중 상태일때는 progress를 통해 시각화
         if (isLoading) {
             // Display a progress bar while loading
             CircularProgressIndicator(
@@ -214,11 +223,13 @@ fun NewsResourceHeaderImage(
             )
         }
 
+        // 이미지 띄우는 컴포저블
         Image(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp),
             contentScale = ContentScale.Crop,
+            // 이미지 상태에 따라 이미지를 출력
             painter = if (isError.not() && !isLocalInspection) {
                 imageLoader
             } else {
