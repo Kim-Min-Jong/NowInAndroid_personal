@@ -45,6 +45,7 @@ import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
  * An extension on [LazyListScope] defining a feed with news resources.
  * Depending on the [feedState], this might emit no items.
  */
+// 확장함수를 통해 컴포넌트 분리
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyStaggeredGridScope.newsFeed(
     feedState: NewsFeedUiState,
@@ -53,6 +54,7 @@ fun LazyStaggeredGridScope.newsFeed(
     onTopicClick: (String) -> Unit,
     onExpandedCardClick: () -> Unit = {},
 ) {
+    // feedState의 상태에 따라 UI를 분기
     when (feedState) {
         NewsFeedUiState.Loading -> Unit
         is NewsFeedUiState.Success -> {
@@ -65,6 +67,7 @@ fun LazyStaggeredGridScope.newsFeed(
                 val analyticsHelper = LocalAnalyticsHelper.current
                 val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
 
+                // 피드 뉴스 정보를 보여주는 컴포저블
                 NewsResourceCardExpanded(
                     userNewsResource = userNewsResource,
                     isBookmarked = userNewsResource.isSaved,
@@ -73,6 +76,7 @@ fun LazyStaggeredGridScope.newsFeed(
                         analyticsHelper.logNewsResourceOpened(
                             newsResourceId = userNewsResource.id,
                         )
+                        // 피드 뉴스가 있는 원본을 엶 (브라우저)
                         launchCustomChromeTab(context, Uri.parse(userNewsResource.url), backgroundColor)
 
                         onNewsResourceViewed(userNewsResource.id)
@@ -97,6 +101,8 @@ fun LazyStaggeredGridScope.newsFeed(
 fun launchCustomChromeTab(context: Context, uri: Uri, @ColorInt toolbarColor: Int) {
     val customTabBarColor = CustomTabColorSchemeParams.Builder()
         .setToolbarColor(toolbarColor).build()
+    // CustomTabsIntent
+    // androidx.browser 라이브러리에 있는 웹뷰인텐트
     val customTabsIntent = CustomTabsIntent.Builder()
         .setDefaultColorSchemeParams(customTabBarColor)
         .build()

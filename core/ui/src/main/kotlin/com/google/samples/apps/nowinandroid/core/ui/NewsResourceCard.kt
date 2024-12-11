@@ -86,6 +86,7 @@ import java.util.Locale
  * [NewsResource] card used on the following screens: For You, Saved
  */
 
+// 뉴스 피드 상세 컴포저블
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NewsResourceCardExpanded(
@@ -111,6 +112,7 @@ fun NewsResourceCardExpanded(
         0
     }
 
+    // 카드 컴포저블을 통해 카드뷰 형태로 사용 (모양 주기 쉽게)
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
