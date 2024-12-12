@@ -209,6 +209,7 @@ internal fun ForYouScreen(
                 onTopicClick = onTopicClick,
             )
 
+            // 피드 사이의 간격
             item(span = StaggeredGridItemSpan.FullLine, contentType = "bottomSpacing") {
                 Column {
                     Spacer(modifier = Modifier.height(8.dp))
@@ -219,11 +220,16 @@ internal fun ForYouScreen(
                 }
             }
         }
+
+        // 애니메이션 실행 컴포저블 (나타남, 사라짐 처리 등)
         AnimatedVisibility(
+            // 조건을 만족하면 애니메이션 보임
             visible = isSyncing || isFeedLoading || isOnboardingLoading,
+            // 진입 애니메이션
             enter = slideInVertically(
                 initialOffsetY = { fullHeight -> -fullHeight },
             ) + fadeIn(),
+            // 종료 애니메이션
             exit = slideOutVertically(
                 targetOffsetY = { fullHeight -> -fullHeight },
             ) + fadeOut(),
@@ -241,6 +247,8 @@ internal fun ForYouScreen(
                 )
             }
         }
+
+        // 스크롤바 설정
         state.DraggableScrollbar(
             modifier = Modifier
                 .fillMaxHeight()
@@ -474,9 +482,12 @@ private fun NotificationPermissionEffect() {
     // in previews
     if (LocalInspectionMode.current) return
     if (VERSION.SDK_INT < VERSION_CODES.TIRAMISU) return
+    // 퍼미션 상태 관련한 정보를 알려줌
     val notificationsPermissionState = rememberPermissionState(
         android.Manifest.permission.POST_NOTIFICATIONS,
     )
+
+    // 권한 내용을 확인후 권한 설정이 되어있지 않으면 권한 요구
     LaunchedEffect(notificationsPermissionState) {
         val status = notificationsPermissionState.status
         if (status is Denied && !status.shouldShowRationale) {
@@ -493,10 +504,14 @@ private fun DeepLinkEffect(
     val context = LocalContext.current
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
 
+    // userNewsResource의 데이터가 바뀌면
     LaunchedEffect(userNewsResource) {
+        // null 이면 아무 동작안함
         if (userNewsResource == null) return@LaunchedEffect
+        // 봤던 컨텐츠가 아니면 띄움
         if (!userNewsResource.hasBeenViewed) onDeepLinkOpened(userNewsResource.id)
 
+        // 새 크롬을 실행
         launchCustomChromeTab(
             context = context,
             uri = Uri.parse(userNewsResource.url),

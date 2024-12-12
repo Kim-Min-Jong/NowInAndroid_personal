@@ -68,11 +68,14 @@ private const val SCROLLBAR_INACTIVE_TO_DORMANT_TIME_IN_MS = 2_000L
 /**
  * A [Scrollbar] that allows for fast scrolling of content by dragging its thumb.
  * Its thumb disappears when the scrolling container is dormant.
+ * 민첩한 스크롤링..
+ *
  * @param modifier a [Modifier] for the [Scrollbar]
  * @param state the driving state for the [Scrollbar]
  * @param orientation the orientation of the scrollbar
  * @param onThumbMoved the fast scroll implementation
  */
+// 스크롤바?
 @Composable
 fun ScrollableState.DraggableScrollbar(
     state: ScrollbarState,
