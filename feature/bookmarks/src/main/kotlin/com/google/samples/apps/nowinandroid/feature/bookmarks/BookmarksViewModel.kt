@@ -44,20 +44,28 @@ class BookmarksViewModel @Inject constructor(
     var shouldDisplayUndoBookmark by mutableStateOf(false)
     private var lastRemovedBookmarkId: String? = null
 
+    // 북마크된 피드의 상태
     val feedUiState: StateFlow<NewsFeedUiState> =
+        // 유저 정보에서 북마크된 것들을 모두 가져옴
         userNewsResourceRepository.observeAllBookmarked()
+            // NewsFeedUiState 형태로 변황
             .map<List<UserNewsResource>, NewsFeedUiState>(NewsFeedUiState::Success)
+            // flow가 수집 되기 전에는 State.Loading을 방출
             .onStart { emit(Loading) }
+            // StateFlow로 변환
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = Loading,
             )
 
+    // 북마크 삭제
     fun removeFromSavedResources(newsResourceId: String) {
         viewModelScope.launch {
+            // 북마크 삭제 할때 UI를 보여주기 위해 (삭제할거냐는)
             shouldDisplayUndoBookmark = true
             lastRemovedBookmarkId = newsResourceId
+            // 북마크 삭제 -> 데이터 레이어로 전송
             userDataRepository.setNewsResourceBookmarked(newsResourceId, false)
         }
     }
@@ -68,15 +76,19 @@ class BookmarksViewModel @Inject constructor(
         }
     }
 
+    // 북마크 취소를 취소
     fun undoBookmarkRemoval() {
         viewModelScope.launch {
+            // 마지막으로 제거된 북마크의 고유값에 대해서
             lastRemovedBookmarkId?.let {
+                // 북마크 상태를 true로 업데이트함
                 userDataRepository.setNewsResourceBookmarked(it, true)
             }
         }
         clearUndoState()
     }
 
+    // 북마크 모든 상탤,ㄹ 초기화
     fun clearUndoState() {
         shouldDisplayUndoBookmark = false
         lastRemovedBookmarkId = null

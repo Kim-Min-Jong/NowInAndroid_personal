@@ -25,6 +25,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable object BookmarksRoute
 
+// 북마크 화면으로 탐색하는 메소드
 fun NavController.navigateToBookmarks(navOptions: NavOptions) =
     navigate(route = BookmarksRoute, navOptions)
 
@@ -32,6 +33,7 @@ fun NavGraphBuilder.bookmarksScreen(
     onTopicClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
+    // NavHost에 navGraph요소를 등록
     composable<BookmarksRoute> {
         BookmarksRoute(onTopicClick, onShowSnackbar)
     }

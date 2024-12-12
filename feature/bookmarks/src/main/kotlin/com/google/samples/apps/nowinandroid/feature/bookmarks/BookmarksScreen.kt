@@ -82,6 +82,7 @@ internal fun BookmarksRoute(
     modifier: Modifier = Modifier,
     viewModel: BookmarksViewModel = hiltViewModel(),
 ) {
+    // 북마크한 피드에 관한 상태
     val feedState by viewModel.feedUiState.collectAsStateWithLifecycle()
     BookmarksScreen(
         feedState = feedState,
@@ -90,7 +91,9 @@ internal fun BookmarksRoute(
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
         onTopicClick = onTopicClick,
         modifier = modifier,
+        // 북마크 상태에 따라
         shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
+        // 북마크 취소를 취소해겠냐다는 UI를 보여주기 위함
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
         clearUndoState = viewModel::clearUndoState,
     )
@@ -112,10 +115,13 @@ internal fun BookmarksScreen(
     undoBookmarkRemoval: () -> Unit = {},
     clearUndoState: () -> Unit = {},
 ) {
+    // 북마크가 지워질 떄 보여줄 메세지
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_removed)
     val undoText = stringResource(id = R.string.feature_bookmarks_undo)
 
+    // 북마크 상태가 바뀔때 마다
     LaunchedEffect(shouldDisplayUndoBookmark) {
+        // 판단해서 스낵바를 띄움
         if (shouldDisplayUndoBookmark) {
             val snackBarResult = onShowSnackbar(bookmarkRemovedMessage, undoText)
             if (snackBarResult) {
@@ -126,13 +132,19 @@ internal fun BookmarksScreen(
         }
     }
 
+    // Lifecycle이 바뀔 떄 트리거 되는 side effect
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+        // 북마크 상태를 초기화
         clearUndoState()
     }
 
+    // 북마크 피드 상태에 따른 UI 분기
     when (feedState) {
+        // 로딩 프로그레스 생성
         Loading -> LoadingState(modifier)
+        // 북마크 피드가 있을 떄
         is Success -> if (feedState.feed.isNotEmpty()) {
+            // 상세 컴포저블을 통해 UI 바인딩
             BookmarksGrid(
                 feedState,
                 removeFromBookmarks,
@@ -141,6 +153,7 @@ internal fun BookmarksScreen(
                 modifier,
             )
         } else {
+            // 빈 화면 전용 컴포저블 바인딩
             EmptyState(modifier)
         }
     }
@@ -150,6 +163,7 @@ internal fun BookmarksScreen(
 
 @Composable
 private fun LoadingState(modifier: Modifier = Modifier) {
+    // 로딩 프로그레스 컴포저블
     NiaLoadingWheel(
         modifier = modifier
             .fillMaxWidth()
@@ -159,6 +173,7 @@ private fun LoadingState(modifier: Modifier = Modifier) {
     )
 }
 
+// 북마크 피드 리스트 컴포저블
 @Composable
 private fun BookmarksGrid(
     feedState: NewsFeedUiState,
@@ -167,12 +182,14 @@ private fun BookmarksGrid(
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // 그리드 뷰 상태 정보
     val scrollableState = rememberLazyStaggeredGridState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "bookmarks:grid")
     Box(
         modifier = modifier
             .fillMaxSize(),
     ) {
+        // 수직 그리드 뷰 (리사이클러 뷰 like)
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(300.dp),
             contentPadding = PaddingValues(16.dp),
@@ -183,6 +200,7 @@ private fun BookmarksGrid(
                 .fillMaxSize()
                 .testTag("bookmarks:feed"),
         ) {
+            // 뉴스 피드와 동일 컴포저블 사용
             newsFeed(
                 feedState = feedState,
                 onNewsResourcesCheckedChanged = { id, _ -> removeFromBookmarks(id) },
