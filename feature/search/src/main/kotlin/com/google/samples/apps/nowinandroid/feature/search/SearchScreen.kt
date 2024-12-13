@@ -103,8 +103,11 @@ internal fun SearchRoute(
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
+    // 최근 검색 목록 UI 출력을 위한 상태
     val recentSearchQueriesUiState by searchViewModel.recentSearchQueriesUiState.collectAsStateWithLifecycle()
+    // 검색 결과 상태
     val searchResultUiState by searchViewModel.searchResultUiState.collectAsStateWithLifecycle()
+    // 검색어
     val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
     SearchScreen(
         modifier = modifier,
