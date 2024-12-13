@@ -156,14 +156,20 @@ internal fun SearchScreen(
             // 검색어
             searchQuery = searchQuery,
         )
+
+        // 검색 결과 상태에 따른 UI 분기
         when (searchResultUiState) {
+            // 로딩 중, 로딩 실패 시 아무런 동작 x
             SearchResultUiState.Loading,
             SearchResultUiState.LoadFailed,
             -> Unit
 
+            // 검색준비가 x
             SearchResultUiState.SearchNotReady -> SearchNotReadyBody()
+            // 마지막 검색어가 최소 검색어 길이 미만인 상태 일때
             SearchResultUiState.EmptyQuery,
             -> {
+                //
                 if (recentSearchesUiState is RecentSearchQueriesUiState.Success) {
                     RecentSearchesBody(
                         onClearRecentSearches = onClearRecentSearches,
@@ -176,13 +182,18 @@ internal fun SearchScreen(
                 }
             }
 
+            // 검색 성공 시
             is SearchResultUiState.Success -> {
+                // 검색 결과가 없을 때
                 if (searchResultUiState.isEmpty()) {
+                    // 빈 결과 컴포저블
                     EmptySearchResultBody(
                         searchQuery = searchQuery,
                         onInterestsClick = onInterestsClick,
                     )
+                    //
                     if (recentSearchesUiState is RecentSearchQueriesUiState.Success) {
+                        // 최근 검색어 출력 UI 컴포저블
                         RecentSearchesBody(
                             onClearRecentSearches = onClearRecentSearches,
                             onRecentSearchClicked = {
@@ -236,6 +247,7 @@ fun EmptySearchResultBody(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = 24.dp),
         )
+        // 관련 다른 검색어 소개
         val tryAnotherSearchString = buildAnnotatedString {
             append(stringResource(id = searchR.string.feature_search_try_another_search))
             append(" ")
@@ -276,11 +288,13 @@ fun EmptySearchResultBody(
 
 @Composable
 private fun SearchNotReadyBody() {
+    // 텍스트를 띄움
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 48.dp),
     ) {
         Text(
+            // Sorry, we are still processing the search index. Please come back later
             text = stringResource(id = searchR.string.feature_search_not_ready),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
@@ -289,6 +303,7 @@ private fun SearchNotReadyBody() {
     }
 }
 
+// 검색 결과 컴포저블
 @Composable
 private fun SearchResultBody(
     searchQuery: String,
@@ -300,11 +315,13 @@ private fun SearchResultBody(
     onNewsResourceViewed: (String) -> Unit,
     onFollowButtonClick: (String, Boolean) -> Unit,
 ) {
+    // (리사이클러뷰 like) 그리드뷰 상태 정보
     val state = rememberLazyStaggeredGridState()
     Box(
         modifier = Modifier
             .fillMaxSize(),
     ) {
+        // 그리드 뷰
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(300.dp),
             contentPadding = PaddingValues(16.dp),
@@ -315,6 +332,7 @@ private fun SearchResultBody(
                 .testTag("search:newsResources"),
             state = state,
         ) {
+            // for you와 비슷한 UI 로직 (앞의 UI 재사용
             if (topics.isNotEmpty()) {
                 item(
                     span = StaggeredGridItemSpan.FullLine,
