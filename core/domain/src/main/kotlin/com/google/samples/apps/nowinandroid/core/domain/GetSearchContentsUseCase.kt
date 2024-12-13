@@ -38,10 +38,12 @@ class GetSearchContentsUseCase @Inject constructor(
     operator fun invoke(
         searchQuery: String,
     ): Flow<UserSearchResult> =
+        // 검색어로 컨텐츠 검색
         searchContentsRepository.searchContents(searchQuery)
             .mapToUserSearchResult(userDataRepository.userData)
 }
 
+// 뷰 레이어에서 사용할 데이터 형식으ㄹ 변환
 private fun Flow<SearchResult>.mapToUserSearchResult(userDataStream: Flow<UserData>): Flow<UserSearchResult> =
     combine(userDataStream) { searchResult, userData ->
         UserSearchResult(

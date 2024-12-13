@@ -27,6 +27,7 @@ import javax.inject.Inject
 class GetRecentSearchQueriesUseCase @Inject constructor(
     private val recentSearchRepository: RecentSearchRepository,
 ) {
+    // data 레이어의 ㅎ함수 호출
     operator fun invoke(limit: Int = 10): Flow<List<RecentSearchQuery>> =
         recentSearchRepository.getRecentSearchQueries(limit)
 }

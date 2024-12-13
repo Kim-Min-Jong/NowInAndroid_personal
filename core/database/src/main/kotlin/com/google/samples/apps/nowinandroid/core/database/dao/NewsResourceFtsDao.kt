@@ -34,6 +34,7 @@ interface NewsResourceFtsDao {
     @Query("SELECT newsResourceId FROM newsResourcesFts WHERE newsResourcesFts MATCH :query")
     fun searchAllNewsResources(query: String): Flow<List<String>>
 
+    // db 갯수를 반환
     @Query("SELECT count(*) FROM newsResourcesFts")
     fun getCount(): Flow<Int>
 }

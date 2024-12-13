@@ -37,8 +37,10 @@ internal class DefaultRecentSearchRepository @Inject constructor(
         )
     }
 
+    // db에서 limit갯수 만큼의 최근 검색어를 가져옴
     override fun getRecentSearchQueries(limit: Int): Flow<List<RecentSearchQuery>> =
         recentSearchQueryDao.getRecentSearchQueryEntities(limit).map { searchQueries ->
+            // viewmodel로 전달하기 위해 타입 변환
             searchQueries.map { it.asExternalModel() }
         }
 

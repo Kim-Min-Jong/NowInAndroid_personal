@@ -50,18 +50,27 @@ class SearchViewModel @Inject constructor(
     private val analyticsHelper: AnalyticsHelper,
 ) : ViewModel() {
 
+    // configure change 등 다양한 이유로 데이터 손실을 방지하기위해 saveStateHandle을 통해 데이터 저장 (간단한 데이터)
     val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = "")
 
+    // 검색 결과 상태
     val searchResultUiState: StateFlow<SearchResultUiState> =
+        // 검색 결과의 숫자를 가져옴
         searchContentsRepository.getSearchContentsCount()
+            // 마지막으로 업데이트된 데이터를 사용
             .flatMapLatest { totalCount ->
+                // 1개 미만이면 검색이 준비되지 않음 상태로 변경하고 그 상태로 변환
                 if (totalCount < SEARCH_MIN_FTS_ENTITY_COUNT) {
                     flowOf(SearchResultUiState.SearchNotReady)
                 } else {
+                    // 저장된 마지막 검색어
                     searchQuery.flatMapLatest { query ->
+                        // 마지막 검색어가 최소 검색어 길이 미만이면
                         if (query.length < SEARCH_QUERY_MIN_LENGTH) {
+                            // 검색어 빈 상태로 변환
                             flowOf(SearchResultUiState.EmptyQuery)
                         } else {
+                            // 유즈케이스를 통해 컨텐츠 검색을 실행
                             getSearchContentsUseCase(query)
                                 // Not using .asResult() here, because it emits Loading state every
                                 // time the user types a letter in the search box, which flickers the screen.
@@ -71,6 +80,7 @@ class SearchViewModel @Inject constructor(
                                         newsResources = data.newsResources,
                                     )
                                 }
+                                // 오류 발생 시 실패 상태
                                 .catch { emit(SearchResultUiState.LoadFailed) }
                         }
                     }
@@ -79,8 +89,9 @@ class SearchViewModel @Inject constructor(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = SearchResultUiState.Loading,
-            )
+            ) // stateflow로 변환
 
+    // 최근 검색어 상태
     val recentSearchQueriesUiState: StateFlow<RecentSearchQueriesUiState> =
         recentSearchQueriesUseCase()
             .map(RecentSearchQueriesUiState::Success)

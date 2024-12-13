@@ -82,6 +82,7 @@ internal class DefaultSearchContentsRepository @Inject constructor(
         }
     }
 
+    // db에 있는 flow를 결합
     override fun getSearchContentsCount(): Flow<Int> =
         combine(
             newsResourceFtsDao.getCount(),

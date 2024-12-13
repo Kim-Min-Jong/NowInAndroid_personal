@@ -31,10 +31,12 @@ sealed interface SearchResultUiState {
 
     data object LoadFailed : SearchResultUiState
 
+    // 성공시 데이터를 가져옴
     data class Success(
         val topics: List<FollowableTopic> = emptyList(),
         val newsResources: List<UserNewsResource> = emptyList(),
     ) : SearchResultUiState {
+        // 데이터들이 없는지 확인
         fun isEmpty(): Boolean = topics.isEmpty() && newsResources.isEmpty()
     }
 

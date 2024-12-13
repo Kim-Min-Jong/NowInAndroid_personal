@@ -34,6 +34,7 @@ interface TopicFtsDao {
     @Query("SELECT topicId FROM topicsFts WHERE topicsFts MATCH :query")
     fun searchAllTopics(query: String): Flow<List<String>>
 
+    // 갯수를 반환
     @Query("SELECT count(*) FROM topicsFts")
     fun getCount(): Flow<Int>
 }
