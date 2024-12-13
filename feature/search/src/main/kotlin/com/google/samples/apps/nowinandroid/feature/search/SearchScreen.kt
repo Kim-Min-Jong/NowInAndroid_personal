@@ -145,10 +145,15 @@ internal fun SearchScreen(
     TrackScreenViewEvent(screenName = "Search")
     Column(modifier = modifier) {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+        // 검색 툴바 컴포저블
         SearchToolbar(
+            // 취소 클릭 시
             onBackClick = onBackClick,
+            // 검색어가 바뀔 때
             onSearchQueryChanged = onSearchQueryChanged,
+            // 검색 버튼이 눌렸을 떄 (트리거 됐을 떄)
             onSearchTriggered = onSearchTriggered,
+            // 검색어
             searchQuery = searchQuery,
         )
         when (searchResultUiState) {
@@ -454,6 +459,7 @@ private fun SearchToolbar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth(),
     ) {
+        // 버튼으로 검색 트리거
         IconButton(onClick = { onBackClick() }) {
             Icon(
                 imageVector = NiaIcons.ArrowBack,
@@ -462,6 +468,7 @@ private fun SearchToolbar(
                 ),
             )
         }
+        // 텍스트 필드 컴포저블
         SearchTextField(
             onSearchQueryChanged = onSearchQueryChanged,
             onSearchTriggered = onSearchTriggered,
@@ -476,14 +483,19 @@ private fun SearchTextField(
     onSearchQueryChanged: (String) -> Unit,
     onSearchTriggered: (String) -> Unit,
 ) {
+    // 텍스트 필드 포커스 상태 설정자
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    // 검색 버튼 실행시 실행할 실제 람다
     val onSearchExplicitlyTriggered = {
+        // 키보드 숨기고
         keyboardController?.hide()
+        // 검색 시작
         onSearchTriggered(searchQuery)
     }
 
+    // 텍스트 필드 정의
     TextField(
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
@@ -516,7 +528,9 @@ private fun SearchTextField(
                 }
             }
         },
+        // 필드 값이 바뀌면
         onValueChange = {
+            // 줄바꿈이 아닌 문자열은 모두 변화 감지 후 검색어 저장
             if ("\n" !in it) onSearchQueryChanged(it)
         },
         modifier = Modifier
@@ -538,13 +552,16 @@ private fun SearchTextField(
             imeAction = ImeAction.Search,
         ),
         keyboardActions = KeyboardActions(
+            // 키보드에 있는 검색버튼 클릭시에도 검색 시작
             onSearch = {
                 onSearchExplicitlyTriggered()
             },
         ),
+        // 검색어는 한 줄로 제한
         maxLines = 1,
         singleLine = true,
     )
+    // 매번 포커스 요청
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }

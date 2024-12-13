@@ -101,6 +101,7 @@ class SearchViewModel @Inject constructor(
                 initialValue = RecentSearchQueriesUiState.Loading,
             )
 
+    // 검색어가 바뀔 때 검색어 저장
     fun onSearchQueryChanged(query: String) {
         savedStateHandle[SEARCH_QUERY] = query
     }
@@ -112,6 +113,7 @@ class SearchViewModel @Inject constructor(
      * The search results are displayed on the fly as the user types, but to explicitly save the
      * search query in the search text field, defining this method.
      */
+    //
     fun onSearchTriggered(query: String) {
         viewModelScope.launch {
             recentSearchRepository.insertOrReplaceRecentSearch(searchQuery = query)

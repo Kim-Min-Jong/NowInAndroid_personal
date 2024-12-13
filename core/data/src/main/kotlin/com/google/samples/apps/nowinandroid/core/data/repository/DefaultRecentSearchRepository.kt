@@ -28,8 +28,10 @@ import javax.inject.Inject
 internal class DefaultRecentSearchRepository @Inject constructor(
     private val recentSearchQueryDao: RecentSearchQueryDao,
 ) : RecentSearchRepository {
+    // 새로 입력되거나 바뀐 검색어에 대해 저장
     override suspend fun insertOrReplaceRecentSearch(searchQuery: String) {
         recentSearchQueryDao.insertOrReplaceRecentSearchQuery(
+            // 검색어와 입력된 시간 객체를 저장
             RecentSearchQueryEntity(
                 query = searchQuery,
                 queriedDate = Clock.System.now(),

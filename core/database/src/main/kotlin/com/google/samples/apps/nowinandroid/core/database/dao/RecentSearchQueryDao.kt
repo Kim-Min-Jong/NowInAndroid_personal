@@ -30,6 +30,7 @@ interface RecentSearchQueryDao {
     @Query(value = "SELECT * FROM recentSearchQueries ORDER BY queriedDate DESC LIMIT :limit")
     fun getRecentSearchQueryEntities(limit: Int): Flow<List<RecentSearchQueryEntity>>
 
+    // Upsert -> 같은것이 존재하면 update 없으면 insert
     @Upsert
     suspend fun insertOrReplaceRecentSearchQuery(recentSearchQuery: RecentSearchQueryEntity)
 
