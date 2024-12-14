@@ -53,17 +53,20 @@ fun InterestsItem(
     description: String = "",
     isSelected: Boolean = false,
 ) {
-    //
+    // 리스트형 컴포저블
     ListItem(
+        //
         leadingContent = {
             InterestsIcon(topicImageUrl, iconModifier.size(48.dp))
         },
+        // the headline content of the list item
         headlineContent = {
             Text(text = name)
         },
         supportingContent = {
             Text(text = description)
         },
+        // 	the trailing meta text, icon, switch or checkbox
         trailingContent = {
             NiaIconToggleButton(
                 checked = following,
@@ -103,6 +106,7 @@ fun InterestsItem(
 
 @Composable
 private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) {
+    // 아이콘 없으면 기본아이콘
     if (topicImageUrl.isEmpty()) {
         Icon(
             modifier = modifier
@@ -113,6 +117,7 @@ private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) 
             contentDescription = null,
         )
     } else {
+        // 매개변수로 받은 url을 통해 이미지를 받아옴
         DynamicAsyncImage(
             imageUrl = topicImageUrl,
             contentDescription = null,
