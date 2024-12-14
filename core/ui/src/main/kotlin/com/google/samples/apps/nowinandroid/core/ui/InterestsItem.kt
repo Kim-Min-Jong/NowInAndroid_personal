@@ -40,6 +40,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.ui.R.string
 
+// 토픽 검색 결과
 @Composable
 fun InterestsItem(
     name: String,
@@ -52,6 +53,7 @@ fun InterestsItem(
     description: String = "",
     isSelected: Boolean = false,
 ) {
+    //
     ListItem(
         leadingContent = {
             InterestsIcon(topicImageUrl, iconModifier.size(48.dp))
