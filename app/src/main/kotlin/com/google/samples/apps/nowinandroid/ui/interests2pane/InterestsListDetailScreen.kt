@@ -55,7 +55,6 @@ import java.util.UUID
 @Serializable internal object TopicPlaceholderRoute
 
 // TODO: Remove @Keep when https://issuetracker.google.com/353898971 is fixed
-@Keep
 @Serializable internal object DetailPaneNavHostRoute
 
 fun NavGraphBuilder.interestsListDetailScreen() {
@@ -64,6 +63,7 @@ fun NavGraphBuilder.interestsListDetailScreen() {
     }
 }
 
+// 관심 정보 리스트 화면
 @Composable
 internal fun InterestsListDetailScreen(
     viewModel: Interests2PaneViewModel = hiltViewModel(),
@@ -71,8 +71,11 @@ internal fun InterestsListDetailScreen(
 ) {
     val selectedTopicId by viewModel.selectedTopicId.collectAsStateWithLifecycle()
     InterestsListDetailScreen(
+        // 선택된 토픽의 고유값
         selectedTopicId = selectedTopicId,
+        // 선택시 실행될 로직
         onTopicClick = viewModel::onTopicClick,
+        // 화면 크기 정보 (적응형)
         windowAdaptiveInfo = windowAdaptiveInfo,
     )
 }

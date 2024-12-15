@@ -32,11 +32,13 @@ class Interests2PaneViewModel @Inject constructor(
 ) : ViewModel() {
 
     val route = savedStateHandle.toRoute<InterestsRoute>()
+    // savedStateHandle에 저장한 정보를 stateflow 형태로 변환
     val selectedTopicId: StateFlow<String?> = savedStateHandle.getStateFlow(
         key = TOPIC_ID_KEY,
         initialValue = route.initialTopicId,
     )
 
+    // 토픽의 고유값을 저장
     fun onTopicClick(topicId: String?) {
         savedStateHandle[TOPIC_ID_KEY] = topicId
     }
