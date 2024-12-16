@@ -51,7 +51,10 @@ class CompositeUserNewsResourceRepository @Inject constructor(
      * Returns available news resources (joined with user data) for the followed topics.
      */
     override fun observeAllForFollowedTopics(): Flow<List<UserNewsResource>> =
-        userDataRepository.userData.map { it.followedTopics }.distinctUntilChanged()
+        // distinctUntilChanged - 인자가 없는 경우, 동일한 값의 후속 반복이 모두 필터링되는 flow를 반환
+        // 인자가 있는 경우, 인자를 통해 동일한 값의 후속 반복을 비교하며 필터링한 flow를 반환
+        userDataRepository.userData.map { it.followedTopics }.distinctUntilChanged() // userData의 followedTopics만 추출
+            // 최근 데이터만 수집
             .flatMapLatest { followedTopics ->
                 when {
                     followedTopics.isEmpty() -> flowOf(emptyList())
@@ -60,7 +63,7 @@ class CompositeUserNewsResourceRepository @Inject constructor(
             }
 
     override fun observeAllBookmarked(): Flow<List<UserNewsResource>> =
-        userDataRepository.userData.map { it.bookmarkedNewsResources }.distinctUntilChanged()
+        userDataRepository.userData.map { it.bookmarkedNewsResources }.distinctUntilChanged() // userData의 bookmarkedNewsResources만 추출
             .flatMapLatest { bookmarkedNewsResources ->
                 when {
                     bookmarkedNewsResources.isEmpty() -> flowOf(emptyList())

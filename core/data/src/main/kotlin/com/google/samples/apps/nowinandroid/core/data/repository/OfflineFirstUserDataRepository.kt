@@ -30,6 +30,7 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     private val analyticsHelper: AnalyticsHelper,
 ) : UserDataRepository {
 
+    // prefereneceDatasource에 저장되어 있는 userData
     override val userData: Flow<UserData> =
         niaPreferencesDataSource.userData
 
