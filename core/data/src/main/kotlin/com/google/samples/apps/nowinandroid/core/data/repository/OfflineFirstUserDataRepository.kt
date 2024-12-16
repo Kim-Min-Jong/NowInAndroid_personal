@@ -38,11 +38,14 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     override suspend fun setFollowedTopicIds(followedTopicIds: Set<String>) =
         niaPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
 
+    // 특정 토픽을 팔로우
     override suspend fun setTopicIdFollowed(followedTopicId: String, followed: Boolean) {
+        // id, 팔로우 상태를 조작
         niaPreferencesDataSource.setTopicIdFollowed(followedTopicId, followed)
         analyticsHelper.logTopicFollowToggled(followedTopicId, followed)
     }
 
+    // 뉴스 북마크 상태를 조작
     override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
         niaPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)
         analyticsHelper.logNewsResourceBookmarkToggled(
@@ -51,9 +54,12 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
         )
     }
 
+    // 뉴스를 봤는지?
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =
         niaPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
 
+
+    // SettingDialog에서 화면 테마, 색상등 을 적용하는 로직을 preference에 저장
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         niaPreferencesDataSource.setThemeBrand(themeBrand)
         analyticsHelper.logThemeChanged(themeBrand.name)
@@ -73,4 +79,5 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
         niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding)
         analyticsHelper.logOnboardingStateChanged(shouldHideOnboarding)
     }
+    ///
 }

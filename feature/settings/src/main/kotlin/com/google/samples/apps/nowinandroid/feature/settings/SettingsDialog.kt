@@ -76,6 +76,7 @@ fun SettingsDialog(
     onDismiss: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    // 앱의 각종 세팅(테마, 색상 등)의 정의하는 상태
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
     SettingsDialog(
         onDismiss = onDismiss,

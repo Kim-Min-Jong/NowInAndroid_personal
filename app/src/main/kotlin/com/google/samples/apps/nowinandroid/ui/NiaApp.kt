@@ -153,6 +153,7 @@ internal fun NiaApp(
         .collectAsStateWithLifecycle()
     val currentDestination = appState.currentDestination
 
+    // 세팅 다이얼로그 보여주기
     if (showSettingsDialog) {
         SettingsDialog(
             onDismiss = { onSettingsDismissed() },

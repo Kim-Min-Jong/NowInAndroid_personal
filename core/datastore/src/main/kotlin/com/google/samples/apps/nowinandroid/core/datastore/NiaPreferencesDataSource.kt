@@ -24,7 +24,13 @@ import com.google.samples.apps.nowinandroid.core.model.data.UserData
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import java.util.prefs.Preferences
 import javax.inject.Inject
+
+// 선언 해줘야함
+//class UserPreferences: Preferences()
+
+
 
 class NiaPreferencesDataSource @Inject constructor(
     private val userPreferences: DataStore<UserPreferences>,
@@ -73,13 +79,16 @@ class NiaPreferencesDataSource @Inject constructor(
         }
     }
 
+    // userPreference 상태를 업데이트
     suspend fun setTopicIdFollowed(topicId: String, followed: Boolean) {
         try {
             userPreferences.updateData {
                 it.copy {
+                    // 팔로우되면 팔로우 id를 추가
                     if (followed) {
+                        //
                         followedTopicIds.put(topicId, true)
-                    } else {
+                    } else { // 삭제
                         followedTopicIds.remove(topicId)
                     }
                     updateShouldHideOnboardingIfNecessary()
@@ -120,8 +129,10 @@ class NiaPreferencesDataSource @Inject constructor(
         }
     }
 
+    // userPreference 상태를 업데이트 (뉴스 북마크)
     suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
         try {
+            // 팔로우 저장과 동일 로직
             userPreferences.updateData {
                 it.copy {
                     if (bookmarked) {
@@ -141,6 +152,7 @@ class NiaPreferencesDataSource @Inject constructor(
     }
 
     suspend fun setNewsResourcesViewed(newsResourceIds: List<String>, viewed: Boolean) {
+        // 본 뉴스 리스트 id 값 상태를 저장
         userPreferences.updateData { prefs ->
             prefs.copy {
                 newsResourceIds.forEach { id ->
