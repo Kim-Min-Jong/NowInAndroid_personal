@@ -38,6 +38,7 @@ class CompositeUserNewsResourceRepository @Inject constructor(
     /**
      * Returns available news resources (joined with user data) matching the given query.
      */
+    // query와 매칭되는 가용한 뉴스들을 가져옴
     override fun observeAll(
         query: NewsResourceQuery,
     ): Flow<List<UserNewsResource>> =

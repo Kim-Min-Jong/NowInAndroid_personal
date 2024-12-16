@@ -41,6 +41,7 @@ interface NewsRepository : Syncable {
     /**
      * Returns available news resources that match the specified [query].
      */
+    // 토픽 id, 뉴스 id 값을 필터링한 뉴스들을 가죠옴
     fun getNewsResources(
         query: NewsResourceQuery = NewsResourceQuery(
             filterTopicIds = null,

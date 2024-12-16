@@ -53,14 +53,16 @@ internal class OfflineFirstNewsRepository @Inject constructor(
     private val notifier: Notifier,
 ) : NewsRepository {
 
+    // 토픽 id, 뉴스 id 값을 필터링한 뉴스들을 가져옴
     override fun getNewsResources(
         query: NewsResourceQuery,
-    ): Flow<List<NewsResource>> = newsResourceDao.getNewsResources(
+    ): Flow<List<NewsResource>> = newsResourceDao.getNewsResources( // db를 통해 데이터를 가져옴
         useFilterTopicIds = query.filterTopicIds != null,
         filterTopicIds = query.filterTopicIds ?: emptySet(),
         useFilterNewsIds = query.filterNewsIds != null,
         filterNewsIds = query.filterNewsIds ?: emptySet(),
     )
+        // 데이터를 외부에 공개할수 있는 형식으로 변환
         .map { it.map(PopulatedNewsResource::asExternalModel) }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {

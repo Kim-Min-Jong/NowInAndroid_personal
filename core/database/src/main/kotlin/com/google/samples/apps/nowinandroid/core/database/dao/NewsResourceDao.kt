@@ -40,22 +40,23 @@ interface NewsResourceDao {
     @Transaction
     @Query(
         value = """
-            SELECT * FROM news_resources
-            WHERE 
-                CASE WHEN :useFilterNewsIds
-                    THEN id IN (:filterNewsIds)
-                    ELSE 1
+            SELECT * FROM news_resources /* news_resources 테이블의 데이터를 모두 가져옴 */
+            WHERE /* 어디서? */
+                CASE WHEN :useFilterNewsIds /* 파라미터로 받은 useFilterNewsIds가 true이면 */
+                    THEN id IN (:filterNewsIds) /* 파라미터로 받은 filterNewsIds에 포함된 id */
+                    ELSE 1 /* 그게 아니면 아이디는 1 */
                 END
-             AND
-                CASE WHEN :useFilterTopicIds
-                    THEN id IN
+             AND /* 동시에 */
+                CASE WHEN :useFilterTopicIds /* 파라미터로 받은 useFilterTopicIds가 true이면 */
+                    THEN id IN 
                         (
+                            /* news_resources_topics 테이블에서 topid_id가 filterTopicIds에 포함된 튜플에서 news_resource_id을 뽑은 서브쿼리  */
                             SELECT news_resource_id FROM news_resources_topics
                             WHERE topic_id IN (:filterTopicIds)
                         )
-                    ELSE 1
+                    ELSE 1 /* 그게 아니면 아이디는 1 */
                 END
-            ORDER BY publish_date DESC
+            ORDER BY publish_date DESC /* pulish_date(날짜) 내림차순으로 정렬 */
     """,
     )
     fun getNewsResources(
