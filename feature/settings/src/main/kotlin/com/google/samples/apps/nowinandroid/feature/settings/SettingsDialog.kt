@@ -71,6 +71,7 @@ import com.google.samples.apps.nowinandroid.feature.settings.R.string
 import com.google.samples.apps.nowinandroid.feature.settings.SettingsUiState.Loading
 import com.google.samples.apps.nowinandroid.feature.settings.SettingsUiState.Success
 
+// 세팅 다이얼로그 컴포저블
 @Composable
 fun SettingsDialog(
     onDismiss: () -> Unit,
@@ -105,16 +106,19 @@ fun SettingsDialog(
      * is configured below. This should be removed when there's fix to
      * https://issuetracker.google.com/issues/221643630
      */
+    // 메인 다이얼로그 컴포저블
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
         modifier = Modifier.widthIn(max = configuration.screenWidthDp.dp - 80.dp),
         onDismissRequest = { onDismiss() },
+        // 다이얼로그 타이틀
         title = {
             Text(
                 text = stringResource(string.feature_settings_title),
                 style = MaterialTheme.typography.titleLarge,
             )
         },
+        // 다이얼로그 메인 텍스트
         text = {
             HorizontalDivider()
             Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -126,7 +130,9 @@ fun SettingsDialog(
                         )
                     }
 
+                    // settingUI가 유효할때
                     is Success -> {
+                        // 세팅 패널 컴포저블 UI 바인딩
                         SettingsPanel(
                             settings = settingsUiState.settings,
                             supportDynamicColor = supportDynamicColor,
@@ -141,6 +147,7 @@ fun SettingsDialog(
             }
             TrackScreenViewEvent(screenName = "Settings")
         },
+        // 확인 버튼
         confirmButton = {
             Text(
                 text = stringResource(string.feature_settings_dismiss_dialog_button_text),
@@ -155,6 +162,7 @@ fun SettingsDialog(
 }
 
 // [ColumnScope] is used for using the [ColumnScope.AnimatedVisibility] extension overload composable.
+// 세팅 다이얼로그 메인 텍스트를 보여줄 패널
 @Composable
 private fun ColumnScope.SettingsPanel(
     settings: UserEditableSettings,
@@ -165,6 +173,7 @@ private fun ColumnScope.SettingsPanel(
 ) {
     SettingsDialogSectionTitle(text = stringResource(string.feature_settings_theme))
     Column(Modifier.selectableGroup()) {
+        // 세팅 컴포저블 하위 선택 요소가 있는 컴포저블
         SettingsDialogThemeChooserRow(
             text = stringResource(string.feature_settings_brand_default),
             selected = settings.brand == DEFAULT,

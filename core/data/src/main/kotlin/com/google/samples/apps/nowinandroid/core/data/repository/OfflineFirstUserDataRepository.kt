@@ -60,16 +60,20 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
 
 
     // SettingDialog에서 화면 테마, 색상등 을 적용하는 로직을 preference에 저장
+
+    // default or android
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         niaPreferencesDataSource.setThemeBrand(themeBrand)
         analyticsHelper.logThemeChanged(themeBrand.name)
     }
 
+    // 다크 테마
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         niaPreferencesDataSource.setDarkThemeConfig(darkThemeConfig)
         analyticsHelper.logDarkThemeConfigChanged(darkThemeConfig.name)
     }
 
+    // dynamicColor 설정
     override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
         niaPreferencesDataSource.setDynamicColorPreference(useDynamicColor)
         analyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor)
