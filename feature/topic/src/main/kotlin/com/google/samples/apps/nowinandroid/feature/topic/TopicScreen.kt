@@ -70,6 +70,8 @@ import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParam
 import com.google.samples.apps.nowinandroid.core.ui.userNewsResourceCardItems
 import com.google.samples.apps.nowinandroid.feature.topic.R.string
 
+
+// 토픽 컴포저블
 @Composable
 fun TopicScreen(
     showBackButton: Boolean,
@@ -78,6 +80,7 @@ fun TopicScreen(
     modifier: Modifier = Modifier,
     viewModel: TopicViewModel = hiltViewModel(),
 ) {
+    // 토픽 화면의 각종 상태
     val topicUiState: TopicUiState by viewModel.topicUiState.collectAsStateWithLifecycle()
     val newsUiState: NewsUiState by viewModel.newsUiState.collectAsStateWithLifecycle()
 
