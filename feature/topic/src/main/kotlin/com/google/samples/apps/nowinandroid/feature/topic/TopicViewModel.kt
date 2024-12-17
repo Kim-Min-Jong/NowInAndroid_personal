@@ -48,6 +48,7 @@ class TopicViewModel @Inject constructor(
     userNewsResourceRepository: UserNewsResourceRepository,
 ) : ViewModel() {
 
+    // 토픽 고유값 저장
     val topicId = savedStateHandle.toRoute<TopicRoute>().id
 
     val topicUiState: StateFlow<TopicUiState> = topicUiState(
@@ -106,16 +107,19 @@ private fun topicUiState(
         id = topicId,
     )
 
+    // 토픽 내용을 가져와서 결합해서 Flow로 반환
     return combine(
         followedTopicIds,
         topicStream,
-        ::Pair,
+        ::Pair, // 위 두 결과 값을 Pair로 결합
     )
         .asResult()
         .map { followedTopicToTopicResult ->
             when (followedTopicToTopicResult) {
+                // success 이면
                 is Result.Success -> {
                     val (followedTopics, topic) = followedTopicToTopicResult.data
+                    // UI state로 변환
                     TopicUiState.Success(
                         followableTopic = FollowableTopic(
                             topic = topic,
@@ -124,6 +128,7 @@ private fun topicUiState(
                     )
                 }
 
+                // 이외 다른 UI state로 변환
                 is Result.Loading -> TopicUiState.Loading
                 is Result.Error -> TopicUiState.Error
             }
@@ -136,14 +141,17 @@ private fun newsUiState(
     userDataRepository: UserDataRepository,
 ): Flow<NewsUiState> {
     // Observe news
+    // news 정보를 가져옴
     val newsStream: Flow<List<UserNewsResource>> = userNewsResourceRepository.observeAll(
         NewsResourceQuery(filterTopicIds = setOf(element = topicId)),
     )
 
     // Observe bookmarks
+    // 유저의 뉴스 북마크 정보를 가져옴
     val bookmark: Flow<Set<String>> = userDataRepository.userData
         .map { it.bookmarkedNewsResources }
 
+    // 위 둘을 pair로 결합하고 UI 노출을 위한 UI state로 변환
     return combine(newsStream, bookmark, ::Pair)
         .asResult()
         .map { newsToBookmarksResult ->
