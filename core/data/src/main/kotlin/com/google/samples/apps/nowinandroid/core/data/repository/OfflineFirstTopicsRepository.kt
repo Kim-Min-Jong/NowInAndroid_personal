@@ -39,12 +39,17 @@ internal class OfflineFirstTopicsRepository @Inject constructor(
     private val network: NiaNetworkDataSource,
 ) : TopicsRepository {
 
+    // 토픽 가져오기
     override fun getTopics(): Flow<List<Topic>> =
         topicDao.getTopicEntities()
             .map { it.map(TopicEntity::asExternalModel) }
 
+    // 특정 id의 토픽 가져오기
     override fun getTopic(id: String): Flow<Topic> =
         topicDao.getTopicEntity(id).map { it.asExternalModel() }
+
+    // 위 두 메소드 모두 토픽을 가져온 후 외부에 노출할 model로 변경
+
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean =
         synchronizer.changeListSync(

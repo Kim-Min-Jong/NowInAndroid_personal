@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface TopicDao {
+    // topics 테이블에서 특정 토픽 가져오기
     @Query(
         value = """
         SELECT * FROM topics
@@ -37,6 +38,7 @@ interface TopicDao {
     )
     fun getTopicEntity(topicId: String): Flow<TopicEntity>
 
+    // topics 테이블에서 모든 토픽 가져오기
     @Query(value = "SELECT * FROM topics")
     fun getTopicEntities(): Flow<List<TopicEntity>>
 
