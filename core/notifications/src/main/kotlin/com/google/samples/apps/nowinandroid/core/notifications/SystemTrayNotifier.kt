@@ -52,6 +52,7 @@ const val DEEP_LINK_URI_PATTERN = "$DEEP_LINK_BASE_PATH/{$DEEP_LINK_NEWS_RESOURC
 /**
  * Implementation of [Notifier] that displays notifications in the system tray.
  */
+// notification 관련 메소드
 @Singleton
 internal class SystemTrayNotifier @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -60,12 +61,14 @@ internal class SystemTrayNotifier @Inject constructor(
     override fun postNewsNotifications(
         newsResources: List<NewsResource>,
     ) = with(context) {
+        // noti 권한을 체크
         if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
             return
         }
 
         val truncatedNewsResources = newsResources.take(MAX_NUM_NOTIFICATIONS)
 
+        // 확장함수를 활용하여 noti들을 생성
         val newsNotifications = truncatedNewsResources.map { newsResource ->
             createNewsNotification {
                 setSmallIcon(R.drawable.core_notifications_ic_nia_notification)
@@ -92,14 +95,17 @@ internal class SystemTrayNotifier @Inject constructor(
                 .build()
         }
 
+        // 노티 전송
         // Send the notifications
         val notificationManager = NotificationManagerCompat.from(this)
+        // 여러개의 노티 등록
         newsNotifications.forEachIndexed { index, notification ->
             notificationManager.notify(
                 truncatedNewsResources[index].id.hashCode(),
                 notification,
             )
         }
+        // 전송
         notificationManager.notify(NEWS_NOTIFICATION_SUMMARY_ID, summaryNotification)
     }
 
@@ -115,6 +121,7 @@ internal class SystemTrayNotifier @Inject constructor(
         .setSummaryText(title)
 }
 
+// 확장함수를 통한 노티 채널 및 노티 빌더를 통해 구현체 생성
 /**
  * Creates a notification for configured for news updates
  */
