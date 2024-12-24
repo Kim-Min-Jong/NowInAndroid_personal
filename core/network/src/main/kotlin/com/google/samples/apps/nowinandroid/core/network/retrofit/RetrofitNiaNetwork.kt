@@ -77,6 +77,7 @@ internal class RetrofitNiaNetwork @Inject constructor(
     okhttpCallFactory: dagger.Lazy<Call.Factory>,
 ) : NiaNetworkDataSource {
 
+    // retrofit 연결체
     private val networkApi = trace("RetrofitNiaNetwork") {
         Retrofit.Builder()
             .baseUrl(NIA_BASE_URL)
@@ -90,6 +91,7 @@ internal class RetrofitNiaNetwork @Inject constructor(
             .create(RetrofitNiaNetworkApi::class.java)
     }
 
+    // retrofit을 통해 각각 알맞는 데이터 가져오기
     override suspend fun getTopics(ids: List<String>?): List<NetworkTopic> =
         networkApi.getTopics(ids = ids).data
 
